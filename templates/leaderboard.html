@@ -1,0 +1,19 @@
+{% extends "layout.html" %}
+{% block content %}   
+<h1>{{ challenge_name}} Leaderboard</h1>
+<img class="scaleimg" src="/logo?c={{ challenge_short }}&k={{ image_key }}" style="background-color: black;" /><br />
+<b>Challenge-ID:</b> "{{ challenge_short }}"<br />
+<b>Start-Date (UTC):</b> {{ challenge_start }}<br />
+<b>End-Date (UTC):</b> {{ challenge_end }}<br />
+<b>Challenge-Type:</b> {{ challenge_type_text }}<br />
+<b>Total during Challenge:</b> {{ total }}<br />
+<table border="1" style="width: 66%">
+  {% for item in data %} 
+  <tr> 
+      <td>{{ item.data_username }}</td>
+      <td align="right">{{ item.result }}</td>
+      <td align="right">{{ item.synced }}</td>
+  </tr>
+  {% endfor %} 
+</table>
+{% endblock %}

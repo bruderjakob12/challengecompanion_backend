@@ -1,0 +1,70 @@
+{% extends "layout.html" %}
+{% block content %}   
+<h1>Create a new Challenge</h1>
+      {% if error is defined and error|length > 0 %}
+      <div class="display_error">
+        {{ error | safe}}
+      </div>
+      {% endif %}
+      <form id="create_challenge_form" method="post"  enctype="multipart/form-data">
+      <div>
+        <label for="challengeName">Name of your challenge:</label><br />
+        <input type="text" id="challengeName" name="challenge_name" placeholder="Challenge Name" maxlength="20" />
+      </div><p></p>
+      <div>
+        <label for="challengeName">Logo for your challenge:</label><br />
+        <input type="file" name="challenge_logo" id="challengeLogo" placeholder="Challenge Logo" />
+      </div><p></p>
+      <div class="twoColumnContent">
+        <label for="target_metric">Select what the competition is about:</label><br />
+        <select id="target_metric" name="target_metric">
+          {% for item in challenge_types %}
+          <option value="{{ item.challenge_type_id }}">{{ item.challenge_type_text }}</option>
+          {% endfor %}
+        </select>
+      </div><p></p>
+      <div>
+        <label for="startDate">Start Date (UTC):</label><br />
+        <input type="date" id="startDate" placeholder="yyyy-mm-dd" name="start_date" />
+      </div><p></p>
+      <div>
+        <label for="endDate">End Date (UTC):</label><br />
+        <input type="date" id="endDate" placeholder="yyyy-mm-dd" name="end_date" />
+      </div><p></p>
+      <div class="twoColumnContent" id="dateErrorInfo">
+        <!-- filled by script in case of an error -->
+      </div>
+      <!--div class="twoColumnContent">
+        <label for="timezone">Select / confirm the timezone for the challenge:</label><br />
+        <select id="timezone" name="timezone">
+          <gets filled by script>
+        </select>
+      </div-->
+      <div class="twoColumnContent">
+        <button id="submitButton" onclick="">Create Challenge</button>
+      </div>
+      <noscript>
+        <div class="twoColumnContent">
+          <i>Important Note: Javascript is required for this page - you will not
+            be able to create a challenge if you do not have it activated.</i>
+        </div>
+      </noscript>
+    </form>
+    <script src="static/scripts.js" type="text/javascript"></script>
+    <script>
+      var form = document.getElementById("create_challenge_form");
+      document.getElementById("submitButton").addEventListener("click", function () {
+        form.submit();
+      });
+      function addDays(days) {
+        var result = new Date();
+        result.setDate(result.getDate() + days);
+        return result;
+      }
+      document.getElementById('startDate').valueAsDate = addDays(1);
+      document.getElementById('endDate').valueAsDate = addDays(14);
+      // actual setup of the page
+      // fill timezone dropdown and select the system one
+      fillTimezoneList();
+    </script>
+{% endblock %}

@@ -1,0 +1,58 @@
+{% extends "layout.html" %}
+{% block content %}   
+<h1>{{ challenge_name}} Challenge created!</h1>
+<span style="font-weight: bold; color: red; text-transform: uppercase;">Save or Bookmark the Link to that page! If lost, you loose access!</span>
+<p></p>
+<img src="/logo?c={{ challenge_identifier }}&k={{ image_key }}" style="background-color: black;" />
+<p></p>
+<div class="twoColumnContent">
+    <label for="challenge_id">Challenge-ID:</label><br />
+    <b>{{ challenge_identifier }}</b> &lt;-- share this with the participants!
+</div><p></p>
+<div class="twoColumnContent">
+    <label for="target_metric">Competition metric:</label><br />
+    {{ challenge_type_text }}
+  </div><p></p>
+<div>
+<label for="startDate">Start Date (UTC):</label><br />
+<input type="date" id="startDate" placeholder="yyyy-mm-dd" name="start_date" />
+<input type="hidden" name="admin_key" value="{{ admin_key }}" />
+</div>
+<p></p>
+<div>
+<label for="endDate">End Date (UTC):</label><br />
+<input type="date" id="endDate" placeholder="yyyy-mm-dd" name="end_date" />
+</div>
+<p></p>
+<a href="/api?key={{api_key}}">API-Link</a><br />
+<a href="/excel?key={{api_key}}">Excel-Link</a><br />
+<a href="/leaderboard?key={{api_key}}">Leaderboard-Link (feel free to distribute that link to the participants)</a><br />
+<p></p>
+<div class="twoColumnContent">
+    <!--button id="updateButton">Update</button-->
+    <button id="deleteButton">Delete</button>
+</div>
+<script src="static/scripts.js" type="text/javascript"></script>
+<script>
+  document.getElementById("deleteButton").addEventListener("click", function () {
+    if (confirm("Do you really delete this challenge? This is irreversible!")) {
+        window.location = '/delete?k={{ admin_key }}';
+        window.location.href = '/delete?k={{ admin_key }}';
+    }
+  });
+  function get_utc(parts) {
+    var date = new Date();
+    var now_utc = Date.UTC(parts[0], parts[1] - 1,
+                parts[2], 0,
+                0, 0);
+    return new Date(now_utc);
+  };
+  var start_date = '{{ start_date }}'.split('-');
+  var end_date = '{{ end_date }}'.split('-');
+  document.getElementById('startDate').valueAsDate = get_utc(start_date);
+  document.getElementById('endDate').valueAsDate = get_utc(end_date);
+  // actual setup of the page
+  // fill timezone dropdown and select the system one
+  //fillTimezoneList();
+</script>
+{% endblock %}

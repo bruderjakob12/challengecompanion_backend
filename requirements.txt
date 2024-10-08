@@ -1,0 +1,11 @@
+flask
+flask-mysqldb
+python-dateutil
+pytz
+pillow
+pandas
+openpyxl
+requests
+redis
+geoip2
+nanoid
