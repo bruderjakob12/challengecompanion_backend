@@ -37,7 +37,8 @@ NAV = {'top': [
 
 def result_query(meta):
     cur = mysql.connection.cursor()
-    result_query = 'SELECT SUM('+meta['challenge_type_metric']+') as result, MAX(data_synced) as synced, device_id, data_username FROM user_data WHERE (data_timestamp >= %s OR data_timestamp=0) AND challenge_id=%s GROUP BY data_username, device_id ORDER BY result DESC'
+    # unfortunately the start-date is stored as 00:00:00 UTC and the day is already "on" for 12h in some parts of the world, so we need to extend the range by that much
+    result_query = 'SELECT SUM('+meta['challenge_type_metric']+') as result, MAX(data_synced) as synced, device_id, data_username FROM user_data WHERE (data_timestamp >= %s-12*60*60 OR data_timestamp=0) AND challenge_id=%s GROUP BY data_username, device_id ORDER BY result DESC'
     cur.execute(result_query, (meta['challenge_start_timestamp'], meta['challenge_id'],))
     return cur.fetchall()
 
@@ -130,8 +131,8 @@ def leaderboard():
             cur.execute("SELECT image_key_hash as image_key FROM image_keys WHERE active=1")
             context['image_key'] = cur.fetchone()['image_key']
             context['total'] = total
-            context['challenge_start'] = datetime.datetime.utcfromtimestamp(meta['challenge_start_timestamp']).strftime('%Y-%m-%d %H:%M')
-            context['challenge_end'] = datetime.datetime.utcfromtimestamp(meta['challenge_end_timestamp']).strftime('%Y-%m-%d %H:%M')
+            context['challenge_start'] = datetime.datetime.utcfromtimestamp(meta['challenge_start_timestamp']).strftime('%Y-%m-%d')
+            context['challenge_end'] = datetime.datetime.utcfromtimestamp(meta['challenge_end_timestamp']).strftime('%Y-%m-%d')
             return render_template('leaderboard.html', **context)
     return redirect('/')
 
